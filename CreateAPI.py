@@ -5,7 +5,7 @@ import pprint
 
 class CreateAPI:
 
-
+ 
 info_dict = {
     'brand': [],
     'picture': [],
