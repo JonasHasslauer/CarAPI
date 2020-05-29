@@ -1,9 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import json
-import html
-import re
-
 
 list_all = []
 
@@ -28,3 +24,7 @@ def get_brand_names():
             list_org[x] = list_org[x].lower().capitalize()
 
     print(sorted(list(set(list_org))))
+
+
+
+get_brand_names()
