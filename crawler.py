@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests, pprint
- 
+
 list_all = []
 
 site2 = 'https://www.adac.de/rund-ums-fahrzeug/autokatalog/marken-modelle/'
