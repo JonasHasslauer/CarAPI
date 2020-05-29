@@ -7,6 +7,33 @@ site2 = 'https://www.adac.de/rund-ums-fahrzeug/autokatalog/marken-modelle/'
 content = requests.get(site2)
 soup = BeautifulSoup(content.text, 'html.parser')
 
+dict = {
+    'brand': [],
+    'picture': [],
+    'Baureihen': {
+        'Generationen': {
+            'Modelle': {
+                'Typ': '',
+                'Preis': '',
+                'Motor': '',
+                'Fuel': '',
+                'Ausstattung': {
+                    'Technik': '',
+                    'Comfort': ''
+                },
+                'Power': '',
+                'Bauzeitraum': '',
+                'Preis': '',
+                'HSN': '',
+                'TSN': '',
+                'VSN': '',
+            },
+
+        },
+        'Generation': []
+    }
+}
+
 def get_brand_names():
 
     replace_pic_string = 'https://www.adac.de/_ext/ITR/Tests/Autodaten/Markenlogos/Resized/'
@@ -21,6 +48,11 @@ def get_brand_names():
                     continue
                 else:
                     dict['picture'].append(img['src'].replace(replace_pic_string, ''))
+
+
+
+
+    print(pprint.pprint(dict))
 
     list_org = list(set(list_all))
 
