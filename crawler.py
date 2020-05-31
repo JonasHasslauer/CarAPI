@@ -1,76 +1,60 @@
 from bs4 import BeautifulSoup
-import requests, pprint
+import requests
+import pprint
+# import Collections
 
-list_all = []
+class InfoHandler:
 
-site2 = 'https://www.adac.de/rund-ums-fahrzeug/autokatalog/marken-modelle/'
-content = requests.get(site2)
-soup = BeautifulSoup(content.text, 'html.parser')
-
-dict = {
-    'brand': [],
-    'picture': [],
-    'Baureihen': {
-        'Generationen': {
-            'Modelle': {
-                'Typ': '',
-                'Preis': '',
-                'Motor': '',
-                'Fuel': '',
-                'Ausstattung': {
-                    'Technik': '',
-                    'Comfort': ''
-                },
-                'Power': '',
-                'Bauzeitraum': '',
-                'Preis': '',
-                'HSN': '',
-                'TSN': '',
-                'VSN': '',
-            },
-
-        },
-        'Generation': []
+    list_all = []
+    list_brand = []
+    dict = {}
+    list_picture = []
+    site = ''
+    dict = {
+        'brand': '',
+        'picture': ''
     }
-}
 
-def get_brand_names():
+    def set_all_brands(self, brands):
+        brands = brands.upper()
+        print(brands)
 
-    replace_pic_string = 'https://www.adac.de/_ext/ITR/Tests/Autodaten/Markenlogos/Resized/'
+    def set_site(self, add = '', base='https://www.adac.de/rund-ums-fahrzeug/autokatalog/marken-modelle/'):
+        if add == '':
+            self.site = base
+        else:
+            add = add.upper().lower()
+            self.site = base + add
+        #print(f"The current site is {self.site}")
 
-    for div in soup.find_all('div'):
-        for link in div.find_all('a'):
-            for img in link.find_all('img'):
-                list_all.append(img['alt'])
-                dict['brand'].append(img['alt'])
+    def get_site(self):
+        return self.site
 
-                if len(img['src'].replace(replace_pic_string, '')) > 50:
-                    continue
-                else:
-                    dict['picture'].append(img['src'].replace(replace_pic_string, ''))
+    def get_content(self):
+        content_raw = requests.get(self.get_site())
+        soup = BeautifulSoup(content_raw.text, 'html.parser')
+        return soup
 
+handler = InfoHandler()
+handler.set_site()
+soup = handler.get_content()
 
+replace_pic_string = 'https://www.adac.de/_ext/ITR/Tests/Autodaten/Markenlogos/Resized/'
 
-
-    print(pprint.pprint(dict))
-
-    list_org = list(set(list_all))
-
-    for x in range(0, len(list_org)-1):
-        if list_org[x] == '':
-            list_org.remove(list_org[x])
-        if list_org[x].islower():
-            list_org[x] = list_org[x].capitalize()
-        if list_org[x].isupper():
-            list_org[x] = list_org[x].lower().capitalize()
-
-        list_org[x] = list_org[x].upper()
-
-
-def get_full_pic_link():
-    # take replace_big_string
-    pass
+for div in soup.find_all('div'):
+    for a in div.find_all('a'):
+        for img in a.find_all('img'):
+            handler.list_brand.append(img['alt'])
+            handler.list_picture.append(img['src'])
 
 
-
-get_brand_names()
+for i in range(0, len(handler.list_brand)):
+    handler.set_site(add=handler.list_brand[i])
+    if handler.list_brand[i] == '':
+        continue
+    handler.dict = {
+        'brand': handler.list_brand[i],
+        'picture': handler.list_picture[i],
+        'site': handler.get_site()# + handler.list_brand[i]
+    }
+    pprint.pprint(handler.dict)
